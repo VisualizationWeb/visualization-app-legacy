@@ -4,6 +4,12 @@ A new Flutter project.
 
 Visualize step count in a chart.
 
+|||
+|-|-|
+|![1](screenshots/1.png)|![2](screenshots/2.png)|
+
+<br>
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
