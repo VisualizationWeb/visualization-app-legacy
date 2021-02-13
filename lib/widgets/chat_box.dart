@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:health_vis/models/message.dart';
-import 'package:health_vis/views/chat_detail_view.dart';
+import 'package:visualization_app/models/message.dart';
+import 'package:visualization_app/views/chat_detail_view.dart';
 
 class ChatBox extends StatelessWidget {
   static const _boxColorBlueGradiant = LinearGradient(

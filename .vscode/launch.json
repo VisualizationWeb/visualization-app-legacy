@@ -5,7 +5,7 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "health_vis",
+			"name": "visualization_app",
 			"request": "launch",
 			"type": "dart"
 		}

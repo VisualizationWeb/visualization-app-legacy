@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:health_vis/models/health_step.dart';
+import 'package:visualization_app/models/health_step.dart';
 import 'package:http/http.dart' as http;
 
 class RestApiService {

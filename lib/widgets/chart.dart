@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
-import 'package:health_vis/models/health_step.dart';
+import 'package:visualization_app/models/health_step.dart';
 
 class HealthStepBarChart extends StatelessWidget {
   final List<charts.Series<HealthStep, String>> seriesList;

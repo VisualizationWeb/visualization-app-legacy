@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
-import 'package:health_vis/views/chat_view.dart';
+import 'package:visualization_app/views/chat_view.dart';
 
 void main() => runApp(MyApp());
 

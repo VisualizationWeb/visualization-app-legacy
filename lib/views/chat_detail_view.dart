@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:health_vis/widgets/chart.dart';
+import 'package:visualization_app/widgets/chart.dart';
 
 class ChartView extends StatelessWidget {
   final Widget detail;

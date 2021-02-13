@@ -1,11 +1,11 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:health_vis/models/message.dart';
-import 'package:health_vis/services/rest_api_service.dart';
-import 'package:health_vis/widgets/chart.dart';
-import 'package:health_vis/widgets/chat_box.dart';
-import 'package:health_vis/widgets/sliding_up.dart';
+import 'package:visualization_app/models/message.dart';
+import 'package:visualization_app/services/rest_api_service.dart';
+import 'package:visualization_app/widgets/chart.dart';
+import 'package:visualization_app/widgets/chat_box.dart';
+import 'package:visualization_app/widgets/sliding_up.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class ChatView extends StatefulWidget {

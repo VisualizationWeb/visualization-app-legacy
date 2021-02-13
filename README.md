@@ -1,12 +1,15 @@
-# health_vis
-
-A new Flutter project.
+# visualization_app
 
 Visualize step count in a chart.
 
-|||
-|-|-|
-|![1](screenshots/1.png)|![2](screenshots/2.png)|
+<table>
+<tbody>
+<tr>
+<td><img src="screenshots/1.png"></td>
+<td><img src="screenshots/2.png"></td>
+</tr>
+</tbody>
+</table>
 
 <br>
 
