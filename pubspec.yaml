@@ -34,11 +34,23 @@ dependencies:
   # http request
   http: ^0.12.2
 
-  # chart
+  # chart (google)
   charts_flutter: ^0.9.0
+
+  # chart (supports interaction)
+  fl_chart: ^0.12.2
 
   # Sliding up Panel
   sliding_up_panel: ^1.0.2
+
+  # Settings ui
+  settings_ui: ^0.6.0
+
+  # shared preferences for persist data
+  shared_preferences: ^0.5.12
+
+  # internationalization and localization
+  intl: ^0.16.1
 
 dev_dependencies:
   flutter_test:

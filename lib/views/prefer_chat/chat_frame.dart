@@ -1,24 +1,21 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:visualization_app/models/message.dart';
-import 'package:visualization_app/services/rest_api_service.dart';
-import 'package:visualization_app/widgets/chart.dart';
+import 'package:visualization_app/widgets/chart/chart.dart';
 import 'package:visualization_app/widgets/chat_box.dart';
 import 'package:visualization_app/widgets/sliding_up.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-class ChatView extends StatefulWidget {
+class ChatFrame extends StatefulWidget {
   @override
-  ChatViewState createState() => ChatViewState();
+  _ChatFrameState createState() => _ChatFrameState();
 }
 
-class ChatViewState extends State<ChatView> {
+class _ChatFrameState extends State<ChatFrame> {
   final _history = <Message>[
     Message('Tip: 궁금한 정보를 물어보세요.\n  예) 오늘 걸음 수 보여줘\n  예) 한달 간 걸음 수 보여줘',
         sendByMe: true),
     Message('Tip: 그래프는 이렇게 표시됩니다.',
-        sendByMe: false, additionalWidget: HealthStepBarChart.withSampleData())
+        sendByMe: false, additionalWidget: Chart.withSampleData())
   ];
   final _controller = PanelController();
 
@@ -27,48 +24,38 @@ class ChatViewState extends State<ChatView> {
       _controller.animatePanelToPosition(1.0);
 
       _history.add(message);
-      _history.add(Message('잠시만요...'));
-    });
-
-    RestApiService.submitMessage(message.value).then((steps) {
-      log(steps.map((step) => step.value).join(', '));
-
-      setState(() {
-        _history.removeLast();
-        _history.add(Message('그래프가 출력되었습니다',
-            additionalWidget: HealthStepBarChart(steps)));
-      });
+      _history.add(Message('결과입니다',
+          additionalWidget: Chart.loadFromQuery(message.value)));
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: Text('Health Vis Chat')),
-        body: Column(children: [
-          Expanded(
-              child: Stack(children: [
-            ListView(
-              padding: const EdgeInsets.only(bottom: 60),
-              shrinkWrap: true,
+    return Column(children: [
+      Expanded(
+        child: Stack(children: [
+          ListView(
+            padding: const EdgeInsets.only(bottom: 60),
+            shrinkWrap: true,
+            children: _history
+                .take(_history.length - 2)
+                .map((message) => ChatBox(message))
+                .toList(),
+          ),
+          SlidingUp(
+            controller: _controller,
+            panel: Column(
               children: _history
-                  .take(_history.length - 2)
+                  .skip(_history.length - 2)
+                  .take(2)
                   .map((message) => ChatBox(message))
                   .toList(),
             ),
-            SlidingUp(
-              controller: _controller,
-              panel: Column(
-                children: _history
-                    .skip(_history.length - 2)
-                    .take(2)
-                    .map((message) => ChatBox(message))
-                    .toList(),
-              ),
-            ),
-          ])),
-          ChatInput(onSend: _sendChat)
-        ]));
+          ),
+        ]),
+      ),
+      ChatInput(onSend: _sendChat)
+    ]);
   }
 }
 

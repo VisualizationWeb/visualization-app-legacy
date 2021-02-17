@@ -1,12 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:visualization_app/models/message.dart';
-import 'package:visualization_app/views/chat_detail_view.dart';
 
 class ChatBox extends StatelessWidget {
-  static const _boxColorBlueGradiant = LinearGradient(
-      colors: [const Color(0xFF007EF4), const Color(0xFF2A75BC)]);
+  //static const _boxColorBlueGradiant = LinearGradient(
+  //    colors: [const Color(0xFF007EF4), const Color(0xFF2A75BC)]);
   static const _boxColorWhite = const Color(0xFFEFEFEF);
   static const _boxColorMain = const Color(0xFF956C5E);
 
@@ -69,32 +66,16 @@ class ChatAdditionalWidget extends StatelessWidget {
 
   ChatAdditionalWidget({this.tag, this.child});
 
-  Widget _wrap() {
-    final random = Random();
-
-    return Hero(
-        tag: random.nextDouble().toString(),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            color: Colors.white,
-          ),
-          margin: const EdgeInsets.symmetric(vertical: 12),
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-          child: child,
-        ));
-  }
-
   @override
   Widget build(BuildContext context) {
-    final widget = _wrap();
-
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => ChartView(detail: widget)));
-      },
-      child: widget,
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+        color: Colors.white,
+      ),
+      margin: const EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+      child: child,
     );
   }
 }
