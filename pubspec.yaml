@@ -52,6 +52,9 @@ dependencies:
   # internationalization and localization
   intl: ^0.16.1
 
+  # for speech recognization
+  speech_to_text: ^3.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
