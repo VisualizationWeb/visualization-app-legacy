@@ -32,7 +32,7 @@ class Chart extends StatefulWidget {
   }
 
   final String query;
-  final List<Stepcount> data;
+  List<Stepcount> data;
 
   Chart(this.data, {this.query});
 
@@ -84,7 +84,7 @@ class _ChartState extends State<Chart> {
         } else if (snapshot.hasError) {
           return Container(child: Text('Error: ${snapshot.error}'));
         } else {
-          return _buildChart(snapshot.data);
+          return _buildChart(widget.data = snapshot.data);
         }
       },
     );
