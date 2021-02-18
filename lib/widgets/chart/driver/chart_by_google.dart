@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:charts_flutter/src/text_style.dart' as chartStyle;
 import 'package:charts_flutter/src/text_element.dart' as chartText;
