@@ -63,16 +63,21 @@ class _ButtonfulFrameState extends State<ButtonfulFrame> {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: Colors.blue,
+          color: Colors.grey,
           style: BorderStyle.solid,
-          width: 2,
+          width: 0.5,
         ),
         borderRadius: BorderRadius.circular(12),
       ),
       height: 45,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [toggleButtons],
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: toggleButtons,
+          )
+        ],
       ),
     );
   }
@@ -88,14 +93,12 @@ class _ButtonfulFrameState extends State<ButtonfulFrame> {
             children: ranges
                 .map((range) => _buildToggleButton(Text(range.label)))
                 .toList(),
-            renderBorder: false,
             isSelected: _isSelected,
             onPressed: _handleSelectionChange,
           )),
           SizedBox(width: 15),
           _wrapToggleButtons(ToggleButtons(
             children: [_buildToggleButton(Icon(Icons.calendar_today_outlined))],
-            renderBorder: false,
             isSelected: [false],
             onPressed: (_) => _handleCustomRangeClick(),
           ))
