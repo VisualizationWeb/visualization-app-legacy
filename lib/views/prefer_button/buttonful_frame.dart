@@ -59,7 +59,7 @@ class _ButtonfulFrameState extends State<ButtonfulFrame> {
     ),
   ];
 
-  final _isSelected = ranges.map((range) => false).toList();
+  final _isSelected = ranges.map((range) => false).toList()..[0] = true;
   bool _isCustomRange = false;
   bool _enableComparison = false;
   var _range = ranges[0];
