@@ -83,6 +83,9 @@ class _ButtonfulFrameState extends State<ButtonfulFrame> {
       firstDate: DateTime(2018),
       lastDate: DateTime(2025),
     );
+
+    if (range == null) return;
+
     log('User selected date range=' + range.toString());
 
     setState(() {
