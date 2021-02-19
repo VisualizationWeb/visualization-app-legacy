@@ -10,21 +10,36 @@ class ChartSelection {
 
 class BarChart extends StatelessWidget {
   final List<charts.Series<Stepcount, DateTime>> seriesList;
+  final List<Stepcount> data;
+  final bool includeComparison;
 
   static const _goal = 8000;
 
-  BarChart(List<Stepcount> steps)
+  BarChart({this.data, List<Stepcount> compareWith})
       : seriesList = [
           charts.Series<Stepcount, DateTime>(
             id: 'Stepcount',
-            colorFn: (step, __) => step.value < _goal
-                ? charts.Color.fromHex(code: '#B7B7B7')
-                : charts.Color.fromHex(code: '#FAB299'),
+            colorFn: compareWith == null
+                ? ((step, _) => step.value < _goal
+                    ? charts.Color.fromHex(code: '#B7B7B7')
+                    : charts.Color.fromHex(code: '#FAB299'))
+                : ((step, _) => charts.Color.fromHex(code: '#FAB299')),
             domainFn: (Stepcount data, _) => data.datetime,
             measureFn: (Stepcount data, _) => data.value,
-            data: steps,
+            data: data,
           ),
-        ];
+          compareWith == null
+              ? null
+              : charts.Series<Stepcount, DateTime>(
+                  id: 'Stepcount_compare',
+                  colorFn: (step, _) => charts.Color.fromHex(code: '#B7B7B7'),
+                  domainFn: (_, index) => data[index].datetime,
+                  measureFn: (Stepcount data, _) => data.value,
+                  // compareWith data may out of range
+                  data: compareWith.getRange(0, data.length).toList(),
+                ),
+        ].where((series) => series != null).toList(),
+        includeComparison = compareWith != null;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +47,12 @@ class BarChart extends StatelessWidget {
       seriesList,
       animate: true,
       defaultInteractions: true,
-      defaultRenderer: charts.BarRendererConfig<DateTime>(),
+      defaultRenderer: includeComparison
+          ? charts.LineRendererConfig<DateTime>(
+              includePoints: true,
+              strokeWidthPx: 2,
+            )
+          : charts.BarRendererConfig<DateTime>(),
       primaryMeasureAxis: charts.NumericAxisSpec(
         renderSpec: charts.GridlineRendererSpec(
           labelAnchor: charts.TickLabelAnchor.after,

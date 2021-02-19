@@ -8,7 +8,7 @@ import 'package:visualization_app/services/rest_api_service.dart';
 import 'package:intl/intl.dart';
 import 'package:visualization_app/widgets/chart/driver/chart_by_google.dart';
 
-class Chart extends StatefulWidget {
+class FutureChart extends StatefulWidget {
   static List<Stepcount> _createSampleData() {
     final random = math.Random();
 
@@ -21,56 +21,43 @@ class Chart extends StatefulWidget {
     ).reversed.toList();
   }
 
-  factory Chart.withSampleData() {
-    //return Chart(_createSampleData());
-
-    return Chart.loadFromQuery('오늘 걸음 수');
+  factory FutureChart.withSampleData() {
+    return FutureChart.loadFromQuery('오늘 걸음 수');
   }
 
-  factory Chart.loadFromQuery(query) {
-    return Chart(null, query: query);
+  factory FutureChart.loadFromQuery(query) {
+    return FutureChart(future: RestApiService.submitMessage(query));
   }
 
-  final String query;
-  List<Stepcount> data;
+  factory FutureChart.loadFromRange({
+    DateTimeRange range,
+    DateTimeRange comparison,
+  }) {
+    return FutureChart(future: () async {
+      return StepcountResponse(
+          data: (await RestApiService.getRange(range.start, range.end)).data,
+          compareWith: comparison == null
+              ? null
+              : (await RestApiService.getRange(
+                      comparison.start, comparison.end))
+                  .data);
+    }());
+  }
 
-  Chart(this.data, {this.query});
+  final Future<StepcountResponse> future;
+  StepcountResponse response;
+
+  FutureChart({this.future});
 
   @override
-  _ChartState createState() => _ChartState();
+  _FutureChartState createState() => _FutureChartState();
 }
 
-class _ChartState extends State<Chart> {
-  Future<List<Stepcount>> _fetch() async {
-    var result = await RestApiService.submitMessage(widget.query);
-
-    log(result.toString());
-
-    return result;
-  }
-
-  Widget _buildChart(List<Stepcount> data) {
-    final dateFormat = DateFormat('yyyy년 M월 d일');
-    final caption = dateFormat.format(data.first.datetime) +
-        ' ~ ' +
-        dateFormat.format(data.last.datetime);
-
-    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Text(
-        caption,
-        style: TextStyle(fontSize: 14),
-      ),
-      SizedBox(height: 10),
-      Expanded(child: BarChart(data)),
-    ]);
-  }
-
+class _FutureChartState extends State<FutureChart> {
   @override
   Widget build(BuildContext context) {
-    if (widget.data != null) return _buildChart(widget.data);
-
     return FutureBuilder(
-      future: _fetch(),
+      future: widget.future,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Container(
@@ -84,9 +71,43 @@ class _ChartState extends State<Chart> {
         } else if (snapshot.hasError) {
           return Container(child: Text('Error: ${snapshot.error}'));
         } else {
-          return _buildChart(widget.data = snapshot.data);
+          widget.response = snapshot.data;
+
+          return Chart(
+            data: widget.response.data,
+            compareWith: widget.response.compareWith,
+          );
         }
       },
     );
+  }
+}
+
+class Chart extends StatelessWidget {
+  final List<Stepcount> data;
+  final List<Stepcount> compareWith;
+
+  Chart({this.data, this.compareWith});
+
+  @override
+  Widget build(BuildContext context) {
+    final dateFormat = DateFormat('yyyy년 M월 d일');
+    final caption = dateFormat.format(data.first.datetime) +
+        ' ~ ' +
+        dateFormat.format(data.last.datetime);
+
+    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Text(
+        caption,
+        style: TextStyle(fontSize: 14),
+      ),
+      SizedBox(height: 10),
+      Expanded(
+        child: BarChart(
+          data: data,
+          compareWith: compareWith,
+        ),
+      ),
+    ]);
   }
 }

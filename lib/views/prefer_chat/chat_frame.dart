@@ -18,7 +18,7 @@ class _ChatFrameState extends State<ChatFrame> {
     Message('Tip: 궁금한 정보를 물어보세요.\n  예) 오늘 걸음 수 보여줘\n  예) 한달 간 걸음 수 보여줘',
         sendByMe: true),
     Message('Tip: 그래프는 이렇게 표시됩니다.',
-        sendByMe: false, additionalWidget: Chart.withSampleData())
+        sendByMe: false, additionalWidget: FutureChart.withSampleData())
   ];
   final _controller = PanelController();
 
@@ -28,7 +28,7 @@ class _ChatFrameState extends State<ChatFrame> {
 
       _history.add(message);
       _history.add(Message('결과입니다',
-          additionalWidget: Chart.loadFromQuery(message.value)));
+          additionalWidget: FutureChart.loadFromQuery(message.value)));
     });
   }
 
@@ -123,6 +123,8 @@ class _ChatInputState extends State<ChatInput> {
     if (textEditingController.text.isEmpty) return;
 
     widget.onSend(Message(textEditingController.text, sendByMe: true));
+
+    textEditingController.clear();
   }
 
   @override

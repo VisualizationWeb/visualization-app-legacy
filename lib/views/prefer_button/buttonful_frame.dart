@@ -10,31 +10,70 @@ class ButtonfulFrame extends StatefulWidget {
 
 class Range {
   final String label;
-  final String query;
+  final DateTimeRange range;
 
-  const Range({this.label, this.query});
+  DateTimeRange get comparison {
+    return DateTimeRange(
+      start: range.start
+          .subtract(range.end.difference(range.start))
+          .subtract(Duration(days: 1)),
+      end: range.start.subtract(Duration(days: 1)),
+    );
+  }
+
+  const Range({this.label, this.range});
 }
 
 class _ButtonfulFrameState extends State<ButtonfulFrame> {
-  static const ranges = [
-    Range(label: '일주일', query: '오늘 걸음 수'),
-    Range(label: '1개월', query: '일주일 걸음 수'),
-    Range(label: '6개월', query: '6개월 걸음 수'),
-    Range(label: '1년', query: '1년 걸음 수'),
+  static final ranges = [
+    Range(
+      label: '일주일',
+      range: DateTimeRange(
+        start: DateTime.now().subtract(Duration(days: 6)),
+        end: DateTime.now(),
+      ),
+    ),
+    Range(
+      label: '1개월',
+      range: DateTimeRange(
+        start: DateTime(
+            DateTime.now().year, DateTime.now().month - 1, DateTime.now().day),
+        end: DateTime.now(),
+      ),
+    ),
+    Range(
+      label: '6개월',
+      range: DateTimeRange(
+        start: DateTime(
+            DateTime.now().year, DateTime.now().month - 6, DateTime.now().day),
+        end: DateTime.now(),
+      ),
+    ),
+    Range(
+      label: '1년',
+      range: DateTimeRange(
+        start: DateTime(
+            DateTime.now().year - 1, DateTime.now().month, DateTime.now().day),
+        end: DateTime.now(),
+      ),
+    ),
   ];
 
   final _isSelected = ranges.map((range) => false).toList();
-  String _query;
+  bool _isCustomRange = false;
+  bool _enableComparison = false;
+  var _range = ranges[0];
 
   void _handleSelectionChange(int index) {
     // toggle is not allowed, else select another
     if (_isSelected[index]) return;
 
     setState(() {
+      _isCustomRange = false;
       _isSelected.fillRange(0, _isSelected.length, false);
       _isSelected[index] = true;
 
-      _query = ranges[index].query;
+      _range = ranges[index];
     });
   }
 
@@ -48,6 +87,9 @@ class _ButtonfulFrameState extends State<ButtonfulFrame> {
 
     setState(() {
       _isSelected.fillRange(0, _isSelected.length, false);
+      _isCustomRange = true;
+
+      _range = Range(range: range);
     });
   }
 
@@ -99,18 +141,27 @@ class _ButtonfulFrameState extends State<ButtonfulFrame> {
           SizedBox(width: 15),
           _wrapToggleButtons(ToggleButtons(
             children: [_buildToggleButton(Icon(Icons.calendar_today_outlined))],
-            isSelected: [false],
+            isSelected: [_isCustomRange],
             onPressed: (_) => _handleCustomRangeClick(),
           ))
         ],
       ),
-      Padding(
-        padding: EdgeInsets.symmetric(vertical: 30, horizontal: 15),
-        child: SizedBox(
-          height: 400,
-          child: _query == null
-              ? Chart.withSampleData()
-              : Chart.loadFromQuery(_query),
+      SizedBox(height: 10),
+      CheckboxListTile(
+        title: Text(
+            _range.label == null ? '이전 데이터와 비교' : '지난 ${_range.label}과 비교'),
+        value: _enableComparison,
+        onChanged: (value) => setState(() {
+          _enableComparison = value;
+        }),
+        controlAffinity: ListTileControlAffinity.leading,
+      ),
+      SizedBox(height: 10),
+      SizedBox(
+        height: 400,
+        child: FutureChart.loadFromRange(
+          range: _range.range,
+          comparison: _enableComparison ? _range.comparison : null,
         ),
       ),
     ]);
